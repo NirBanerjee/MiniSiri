@@ -1,9 +1,10 @@
 from __future__ import division
 from SparseGenerator import sparseModel1, sparseModel2
-from utilities import calculateInnerProd, getLikelihoodEstimate, getGradient, updateTheta
+from utilities import calculateInnerProd, getLikelihoodEstimate, getGradient, updateTheta, getErrorRate
 import math
 import csv
 import sys
+import numpy as np
 
 #Method to open file to read data
 def openDataFile(fileName):
@@ -18,20 +19,35 @@ def openDataFile(fileName):
 if __name__ == '__main__':
 	
 	trainFileName = sys.argv[1];
-	dataFrame = openDataFile(trainFileName)
+	validationFileName = sys.argv[2]
+	testFileName = sys.argv[3]
+	numEpoch = sys.argv[4]
+	featureFlag = sys.argv[5]
 
-	labelData,featureList = sparseModel1(dataFrame)
-	#labelData,featureList = sparseModel2(dataFrame)
+	trainData = openDataFile(trainFileName)
+	validationData = openDataFile(validationFileName)
+	testData = openDataFile(testFileName)
+
+	if int(featureFlag) == 1:
+		trainLabels, trainFeatures = sparseModel1(trainData)
+		validationLabels, validationFeatures = sparseModel1(validationData)
+		testLabels, testFeatures = sparseModel1(testData)
+	else:
+		trainLabels, trainFeatures = sparseModel2(trainData)
+		validationLabels, validationFeatures = sparseModel2(validationData)
+		testLabels, testFeatures = sparseModel2(testData)
 
 	#Get Count of Classes
-	classSet = set(labelData)
+	classSet = set(trainLabels)
 
+	#Create Mapping of labels and indices
 	classMap = {}
 	i = 0
 	for cl in classSet:
 		classMap[cl] = i 
 		i = i+1
 
+	#Create Inverse Mapping of labels and indices
 	classMapInv = {}
 	i = 0
 	for cl in classSet:
@@ -43,16 +59,25 @@ if __name__ == '__main__':
 
 	for label in classSet:
 		theta[label] = {}
-		for feature in featureList:
+		for feature in trainFeatures :
 			for key in feature:
 				theta[label][key] = 0.0
 
-	for i in range(len(featureList)):
-		feature = featureList[i]
-		likelihoodList = getLikelihoodEstimate(theta, feature, classSet)
-		gradient = getGradient( likelihoodList, classMap[labelData[i]])
-		theta = updateTheta(theta, gradient, feature, classMapInv, 0.5)
-		print theta
+	#Train theta
+	for j in range(int(numEpoch)):
+		for i in range(len(trainFeatures)):
+			feature = trainFeatures[i]
+			likelihoodList = getLikelihoodEstimate(theta, feature, classSet)
+			gradient = getGradient( likelihoodList, classMap[trainLabels[i]])
+			theta = updateTheta(theta, gradient, feature, classMapInv, 0.5)
+		print "Epoch=" + str(j+1) + "Error (train): " + str(getErrorRate(trainFeatures, theta, classSet, classMap, trainLabels))
+		print "Epoch=" + str(j+1) + "Error (test): " + str(getErrorRate(testFeatures, theta, classSet, classMap, testLabels))
+
+	
+	
+	
+
+
 
 
 	

@@ -9,7 +9,7 @@ def sparseModel1(dataFrame):
 		if len(row) == 2:
 			labelList.append(row[1])
 			featureRow["bias"] = 1
-			featureRow["cur:" + row[0]] = 1
+			featureRow["curr:" + row[0]] = 1
 			featureList.append(featureRow)
 
 	return labelList,featureList
@@ -21,7 +21,8 @@ def sparseModel2(dataFrame):
 
 	featureRow = {}
 	row = dataFrame[0];
-	featureRow["cur:" + row[0]] = 1
+	featureRow["bias"] = 1
+	featureRow["curr:"+row[0]] = 1
 	featureRow["prev:BOS"] = 1
 	nextRow = dataFrame[1];
 	featureRow["next:"+ nextRow[0]] = 1
@@ -38,13 +39,14 @@ def sparseModel2(dataFrame):
 			if len(preRow) == 2:
 				prevLabel = "prev:" + preRow[0]
 			elif len(preRow) == 0:
-				prevLabel = "prev:BOS"
+				prevLabel = "curr:BOS"
 			if len(nextRow) == 0:
 				nextLabel = "next:EOS"
 			elif len(nextRow) == 2:
 				nextLabel = "next:" + nextRow[0];
 
-			featureRow["cur:" + curRow[0]] = 1
+			featureRow["bias"] = 1
+			featureRow["curr:" +curRow[0]] = 1
 			featureRow[prevLabel] = 1
 			featureRow[nextLabel] = 1
 
@@ -53,8 +55,9 @@ def sparseModel2(dataFrame):
 
 	if len(dataFrame[length-1]) != 0:
 		featureRow = {}
+		featureRow["bias"] = 1
 		row = dataFrame[length-1];
-		featureRow["cur:" + row[0]] = 1
+		featureRow["curr:"+row[0]] = 1
 		preRow = dataFrame[length-2];
 		featureRow["prev:" + preRow[0]] = 1
 		nextRow = dataFrame[1];

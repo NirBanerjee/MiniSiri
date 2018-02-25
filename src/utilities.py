@@ -8,7 +8,8 @@ def expCalculator(value):
 def calculateInnerProd(thetaDict, feature):
 	innerProd = 0.0
 	for key in feature:
-		innerProd = innerProd + thetaDict[key] * 1
+		if key in thetaDict:
+			innerProd = innerProd + thetaDict[key] * 1
 
 	return innerProd
 
@@ -41,3 +42,13 @@ def updateTheta(theta, gradients, feature,cmapinv,eta):
 			theta[cmapinv[i]][ft] = theta[cmapinv[i]][ft] + eta*gradient
 		i+=1
 	return theta
+
+def getErrorRate(featureList, theta, classSet, classMap, labelData):
+	acc = 0.0
+	for i in range(len(featureList)):
+		feature = featureList[i]
+		likelihoodList = getLikelihoodEstimate(theta, feature, classSet)
+		if np.argmax(likelihoodList) == classMap[labelData[i]]:
+			acc+=1
+
+	return (1-(acc/len(featureList)))
