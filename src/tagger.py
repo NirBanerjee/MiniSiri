@@ -10,7 +10,7 @@ def openDataFile(fileName):
 	with open(fileName, 'rb') as csvfile:
 		fileData = csv.reader(csvfile, delimiter='\t')
 		for row in fileData:
-			dataFrame.append(tuple(row))
+			dataFrame.append(row)
 	return dataFrame
 
 #Main Method
@@ -18,7 +18,13 @@ if __name__ == '__main__':
 	
 	trainFileName = sys.argv[1];
 	dataFrame = openDataFile(trainFileName)
-	#print dataFrame
-	#sparseData = {}
-	sparseData = sparseModel1(dataFrame)
-	print sparseData
+
+	labelData,featureList = sparseModel1(dataFrame)
+	for val in labelData:
+		print val
+
+
+	print "+++++++++++++++++++++++++"
+	labelData,featureList = sparseModel2(dataFrame)
+	for val in labelData:
+		print val
