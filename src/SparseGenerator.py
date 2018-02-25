@@ -1,5 +1,6 @@
 import math
 
+#Generate the sparse matrix for model1
 def sparseModel1(dataFrame):
 	labelList = []
 	featureList = []
@@ -12,6 +13,7 @@ def sparseModel1(dataFrame):
 
 	return labelList,featureList
 
+#Generate the sparse matrix for model2
 def sparseModel2(dataFrame):
 	labelList = []
 	featureList = []
@@ -26,7 +28,6 @@ def sparseModel2(dataFrame):
 	featureList.append(featureRow);
 
 	length = len(dataFrame)
-
 	for i in range(1, length - 1):
 		preRow = dataFrame[i-1];
 		nextRow = dataFrame[i+1];
@@ -59,7 +60,5 @@ def sparseModel2(dataFrame):
 		featureRow["next:EOS"] = 1
 		labelList.append(row[1])
 		featureList.append(featureRow);
-
-
 
 	return labelList,featureList

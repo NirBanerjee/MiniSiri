@@ -20,11 +20,5 @@ if __name__ == '__main__':
 	dataFrame = openDataFile(trainFileName)
 
 	labelData,featureList = sparseModel1(dataFrame)
-	for val in labelData:
-		print val
 
-
-	print "+++++++++++++++++++++++++"
-	labelData,featureList = sparseModel2(dataFrame)
-	for val in labelData:
-		print val
+	#labelData,featureList = sparseModel2(dataFrame)
