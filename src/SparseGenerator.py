@@ -8,7 +8,8 @@ def sparseModel1(dataFrame):
 		featureRow = {}
 		if len(row) == 2:
 			labelList.append(row[1])
-			featureRow = {"cur:" + row[0] : 1}
+			featureRow["bias"] = 1
+			featureRow["cur:" + row[0]] = 1
 			featureList.append(featureRow)
 
 	return labelList,featureList
