@@ -46,7 +46,8 @@ def getErrorRate(featureList, theta, classSet, classMap, labelData):
 	featureCount = 0
 	for i in range(len(featureList)):
 		feature = featureList[i]
-		if len(feature) > 0:
+
+		if feature is not None:
 			featureCount = featureCount + 1;
 			likelihoodList = getLikelihoodEstimate(theta, feature, classSet)
 			if np.argmax(likelihoodList) == classMap[labelData[i]]:
@@ -58,9 +59,22 @@ def getPredictedLabels(featureList, theta, classSet, classMapInv):
 	predictedLabels = []
 	for i in range(len(featureList)):
 		feature = featureList[i]
-		if len(feature) > 0:
+		if feature is not None:
 			likelihoodList = getLikelihoodEstimate(theta, feature, classSet)
 			predictedLabels.append(classMapInv[np.argmax(likelihoodList)])
 		else:
 			predictedLabels.append("")
 	return predictedLabels
+
+def getLogLikelihood(theta, featureList, labelsList, classSet, classMap):
+	featureCount = 0
+	logLikelihood = 0.0
+	for i in range(len(featureList)):
+			feature = featureList[i]
+			if feature is not None :
+				featureCount = featureCount + 1
+				likelihoodList = getLikelihoodEstimate(theta, feature, classSet)
+				logLikelihood = logLikelihood + logCalculator(likelihoodList[classMap[labelsList[i]]])
+
+	return (-logLikelihood/(featureCount))
+

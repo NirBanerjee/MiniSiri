@@ -1,5 +1,4 @@
 import math
-
 #Generate the sparse matrix for model1
 def sparseModel1(dataFrame):
 	labelList = []
@@ -12,8 +11,8 @@ def sparseModel1(dataFrame):
 			featureRow["curr:" + row[0]] = 1
 			featureList.append(featureRow)
 		else:
-			labelList.append("")
-			featureList.append("")
+			labelList.append(None)
+			featureList.append(None)
 
 	return labelList,featureList
 
@@ -56,8 +55,8 @@ def sparseModel2(dataFrame):
 			featureList.append(featureRow);
 			labelList.append(curRow[1])
 		else:
-			labelList.append("")
-			featureList.append("")
+			labelList.append(None)
+			featureList.append(None)
 
 	if len(dataFrame[length-1]) != 0:
 		featureRow = {}

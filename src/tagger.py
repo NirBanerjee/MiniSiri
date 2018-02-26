@@ -1,6 +1,6 @@
 from __future__ import division
 from SparseGenerator import sparseModel1, sparseModel2
-from utilities import calculateInnerProd, getLikelihoodEstimate, getGradient, updateTheta, getErrorRate, logCalculator, getPredictedLabels
+from utilities import calculateInnerProd, getLikelihoodEstimate, getGradient, updateTheta, getErrorRate, logCalculator, getPredictedLabels, getLogLikelihood
 import math
 import csv
 import sys
@@ -65,35 +65,34 @@ if __name__ == '__main__':
 	for label in classSet:
 		theta[label] = {}
 		for feature in trainFeatures :
+
+			if feature is None:
+
+				continue
+
 			for key in feature:
 				theta[label][key] = 0.0
 	
 	outputWrite = []
-	
 	#Train theta
 	for j in range(int(numEpoch)):
-		logLikelihood = 0.0
 		featureCount = 0
 		for i in range(len(trainFeatures)):
 			feature = trainFeatures[i]
-			if len(feature) > 0 :
+			if feature is not None :
 				featureCount = featureCount + 1
 				likelihoodList = getLikelihoodEstimate(theta, feature, classSet)
-				logLikelihood = logLikelihood + logCalculator(likelihoodList[classMap[trainLabels[i]]])
 				gradient = getGradient(likelihoodList, classMap[trainLabels[i]])
 				theta = updateTheta(theta, gradient, feature, classMapInv, 0.5)
-		outputWrite.append("epoch=" + str(j+1) + " likelihood(train):" + str(-logLikelihood/featureCount))
 
 		featureCount = 0
-		logLikelihood = 0.0
-		for i in range(len(validationFeatures)):
-			if len(feature) > 0 :
-				featureCount = featureCount + 1
-				feature = trainFeatures[i]
-				likelihoodList = getLikelihoodEstimate(theta, feature, classSet)
-				logLikelihood = logLikelihood + logCalculator(likelihoodList[classMap[trainLabels[i]]])
-		outputWrite.append("epoch=" + str(j+1) + " likelihood(validation):" + str(-logLikelihood/featureCount))
+		logLikelihood = getLogLikelihood(theta, trainFeatures, trainLabels, classSet, classMap)
+		outputWrite.append("epoch=" + str(j+1) + " likelihood(train):" + str(logLikelihood))
 
+		logLikelihood = getLogLikelihood(theta, validationFeatures, validationLabels, classSet, classMap)
+		outputWrite.append("epoch=" + str(j+1) + " likelihood(train):" + str(logLikelihood))
+	
+	#Predict Train Labels
 	labelsPredicted = getPredictedLabels(trainFeatures, theta, classSet, classMapInv)
 	writer = open(trainOutputFile, 'w')
 	for label in labelsPredicted:
@@ -101,6 +100,7 @@ if __name__ == '__main__':
 		writer.write("\n")
 	writer.close
 
+	#Predict Test Labels
 	labelsPredicted = getPredictedLabels(testFeatures, theta, classSet, classMapInv)
 	writer = open(testOutputFile, 'w')
 	for label in labelsPredicted:
@@ -108,29 +108,12 @@ if __name__ == '__main__':
 		writer.write("\n")
 	writer.close
 
+	#Calculate train and test error
 	outputWrite.append("error(train): " + str(getErrorRate(trainFeatures, theta, classSet, classMap, trainLabels)))
 	outputWrite.append("error(test): " + str(getErrorRate(testFeatures, theta, classSet, classMap, testLabels)))
 	
-
 	writer = open(metricsFile, 'w')
 	for line in outputWrite:
 		writer.write(line)
 		writer.write("\n")
 	writer.close
-
-
-	
-		
-
-	
-
-
-
-
-	
-
-
-
-
-
-
