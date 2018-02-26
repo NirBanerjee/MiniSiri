@@ -11,6 +11,9 @@ def sparseModel1(dataFrame):
 			featureRow["bias"] = 1
 			featureRow["curr:" + row[0]] = 1
 			featureList.append(featureRow)
+		else:
+			labelList.append("")
+			featureList.append("")
 
 	return labelList,featureList
 
@@ -52,6 +55,9 @@ def sparseModel2(dataFrame):
 
 			featureList.append(featureRow);
 			labelList.append(curRow[1])
+		else:
+			labelList.append("")
+			featureList.append("")
 
 	if len(dataFrame[length-1]) != 0:
 		featureRow = {}
