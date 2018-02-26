@@ -65,14 +65,10 @@ if __name__ == '__main__':
 	for label in classSet:
 		theta[label] = {}
 		for feature in trainFeatures :
+			if feature is not None:
+				for key in feature:
+					theta[label][key] = 0.0
 
-			if feature is None:
-
-				continue
-
-			for key in feature:
-				theta[label][key] = 0.0
-	
 	outputWrite = []
 	#Train theta
 	for j in range(int(numEpoch)):
